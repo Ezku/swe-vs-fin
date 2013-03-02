@@ -5,6 +5,7 @@ import play.api.mvc._
 import models.integrations._
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.libs.json._
+import org.scala_tools.time.Imports._
 
 object Application extends Controller {
   def index = Action {
@@ -23,7 +24,7 @@ object Application extends Controller {
             )
           })
         )
-        Ok(Json.stringify(trains))
+        Ok(trains)
       }
     }
   }
@@ -51,65 +52,7 @@ object Application extends Controller {
                })
             )
         )
-        Ok(Json.stringify(train))
-      }
-    }
-  }
-  
-  def sjStationList = Action {
-    Async {
-      TrafikverketTrainInfo.fetchStationList map { list =>
-        val stations = Json.obj(
-          "stations" -> Json.arr((list \\ "Station").map { station =>
-            Json.obj(
-              "signature" -> (station \ "Signatur").text,
-              "name" -> (station \ "Namn").text
-            )
-          })
-        )
-        Ok(Json.stringify(stations))
-      }
-    }
-  }
-  
-  def sjArrivalList(signature: String) = Action {
-    Async {
-      TrafikverketTrainInfo.fetchArrivalList(signature) map { list =>
-        val arrivals = Json.obj(
-          "arrivals" -> Json.arr((list \\ "Trafiklage").map { arrival =>
-            Json.obj(
-              "guid" -> (arrival \ "TagGrupp").text,
-              "title" -> (arrival \ "AnnonseratTagId").text,
-              "from" -> (arrival \ "Fran").text,
-              "to" -> (arrival \ "Till").text,
-              "scheduledArrival" -> (arrival \ "AnnonseradTidpunktAnkomst").text,
-              "actualArrival" -> (arrival \ "VerkligTidpunktAnkomst").text,
-              "estimatedArrival" -> (arrival \ "BeraknadTidpunktAnkomst").text
-            )
-          })
-        )
-        Ok(Json.stringify(arrivals))
-      }
-    }
-  }
-  
-  def sjDepartureList(signature: String) = Action {
-    Async {
-      TrafikverketTrainInfo.fetchArrivalList(signature) map { list =>
-        val departures = Json.obj(
-          "departures" -> Json.arr((list \\ "Trafiklage").map { departure =>
-            Json.obj(
-              "guid" -> (departure \ "TagGrupp").text,
-              "title" -> (departure \ "AnnonseratTagId").text,
-              "from" -> (departure \ "Fran").text,
-              "to" -> (departure \ "Till").text,
-              "scheduledDeparture" -> (departure \ "AnnonseradTidpunktAvgang").text,
-              "actualDeparture" -> (departure \ "VerkligTidpunktAvgang").text,
-              "estimatedDeparture" -> (departure \ "BeraknadTidpunktAvgang").text
-            )
-          })
-        )
-        Ok(Json.stringify(departures))
+        Ok(train)
       }
     }
   }
@@ -133,7 +76,7 @@ object Application extends Controller {
             )
           })
         )
-        Ok(Json.stringify(trains))
+        Ok(trains)
       }
     }
   }

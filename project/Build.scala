@@ -10,7 +10,8 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     // Add your project dependencies here,
     jdbc,
-    anorm
+    anorm,
+    "org.scalaj" % "scalaj-time_2.10.0-M7" % "0.6"
   )
 
 

@@ -10,9 +10,5 @@ GET		/vr/trains/:train			controllers.Application.vrTrainData(train:String)
 
 GET		/sj/trains				    controllers.Application.sjTrainList
 
-GET		/sj/stations				controllers.Application.sjStationList
-GET     /sj/stations/:signature/arrivals   controllers.Application.sjArrivalList(signature:String)
-GET     /sj/stations/:signature/departures controllers.Application.sjDepartureList(signature:String)
-
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

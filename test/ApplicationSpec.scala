@@ -30,4 +30,26 @@ class ApplicationSpec extends Specification {
       }
     }
   }
+  
+  "VR API" should {
+    "provide a train list as JSON" in {
+      running(FakeApplication()) {
+        val vrTrains = route(FakeRequest(GET, "/vr/trains")).get
+        
+        status(vrTrains) must equalTo(OK)
+        contentType(vrTrains) must beSome.which(_ == "application/json")
+      }
+    }
+  }
+  
+//  "SJ API" should {
+//    "provide a train list as JSON" in {
+//      running(FakeApplication()) {
+//        val vrTrains = route(FakeRequest(GET, "/sj/trains")).get
+//        
+//        status(vrTrains) must equalTo(OK)
+//        contentType(vrTrains) must beSome.which(_ == "application/json")
+//      }
+//    }
+//  }
 }
