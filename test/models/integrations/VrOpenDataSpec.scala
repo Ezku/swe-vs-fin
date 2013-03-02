@@ -1,23 +1,23 @@
-package test.models.schedules
+package test.models.integrations
 
 import org.specs2.mutable._
-import models.schedules.VrTrainData
+import models.integrations.VrOpenData
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class VrTrainDataSpec extends Specification {
+class VrOpenDataSpec extends Specification {
 	"Train list" should {
 		"be fetched asynchronously" in {
-			VrTrainData.fetchTrainList should beAnInstanceOf[Future[_]]
+			VrOpenData.fetchTrainList should beAnInstanceOf[Future[_]]
 		}
 		"contain RSS items" in {
-			for (list <- VrTrainData.fetchTrainList) {
+			for (list <- VrOpenData.fetchTrainList) {
 				list should \\("item")
 			}
 		}
 		"have RSS items with train data" in {
 			for {
-			 	list <- VrTrainData.fetchTrainList
+			 	list <- VrOpenData.fetchTrainList
 			 	item <- list \\ "item"
 			} {
 				item should \("guid")
@@ -25,9 +25,9 @@ class VrTrainDataSpec extends Specification {
 		}
 	}
 	
-	"Train data" should {
+	"Train data" should {	
 		"be fetched asynchronously" in {
-			VrTrainData.fetchTrainData("foo") should beAnInstanceOf[Future[_]]
+			VrOpenData.fetchTrainData("foo") should beAnInstanceOf[Future[_]]
 		}
 	}
 }
