@@ -22,13 +22,13 @@ class TrafikverketTrainInfoSpec extends Specification {
         }
       }
     }
-    "have station names" in {
+    "have station signatures" in {
       running(FakeApplication()) {
         for {
           stations <- TrafikverketTrainInfo.fetchStationList
           station <- stations \\ "Station"
         } {
-          station should \("Namn")
+          station should \("Signatur")
         }
       }
     }
@@ -38,12 +38,12 @@ class TrafikverketTrainInfoSpec extends Specification {
     val station = "Rinkeby"
     "be fetched asynchronously" in {
       running(FakeApplication()) {
-        TrafikverketTrainInfo.fetchDepartureList(station) should beAnInstanceOf[Future[_]]
+        TrafikverketTrainInfo.fetchArrivalList(station) should beAnInstanceOf[Future[_]]
       }
     }
     "contain departures as XML" in {
       running(FakeApplication()) {
-        for (departures <- TrafikverketTrainInfo.fetchDepartureList(station)) {
+        for (departures <- TrafikverketTrainInfo.fetchArrivalList(station)) {
           departures should \\("Trafiklage")
         }
       }
@@ -51,7 +51,7 @@ class TrafikverketTrainInfoSpec extends Specification {
     "have train ids for departing trains" in {
       running(FakeApplication()) {
         for {
-          departures <- TrafikverketTrainInfo.fetchDepartureList(station)
+          departures <- TrafikverketTrainInfo.fetchArrivalList(station)
           departure <- departures \\ "Trafiklage"
         } {
           departure should \("TagGrupp")

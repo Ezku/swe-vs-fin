@@ -7,9 +7,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.Play
 
 object TrafikverketTrainInfo {
-  lazy val apiKey = Play.current.configuration.getString("schedules.sj.apiKey").getOrElse("")
+  lazy val apiKey = Play.current.configuration.getString("integrations.trafikverket.traininfo.key").getOrElse("")
   private lazy val stationList = WS.url("https://api.trafiklab.se/trafikverket/traininfo/stations/listAllCurrentlyUsed")
-  private def departureList(station: String) = WS.url(s"https://api.trafiklab.se/trafikverket/traininfo/stations/name/${station}/departures")
+  private def arrivalList(station: String) = WS.url(s"https://api.trafiklab.se/trafikverket/traininfo/stations/sign/${station}/arrivals")
+  private def trainInfo(trainId: String) = WS.url(s"https://api.trafiklab.se/trafikverket/traininfo/trains/${trainId}")
   private def bodyToXml(response: Response) = XML.loadString(response.body)
 
   lazy val fetchStationList =
@@ -18,9 +19,16 @@ object TrafikverketTrainInfo {
       .get()
       .map(bodyToXml _)
   
-  def fetchDepartureList(station: String) =
-    departureList(station)
+  def fetchArrivalList(stationSignature: String) =
+    arrivalList(stationSignature)
       .withQueryString("key" -> apiKey, "maxItems" -> "500", "maxHours" -> "48")
       .get()
       .map(bodyToXml _)
+  
+  def fetchTrainInfo(trainId: String) =
+    trainInfo(trainId)
+      .withQueryString("key" -> apiKey)
+      .get()
+      .map(bodyToXml _)
+    
 }
