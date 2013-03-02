@@ -4,8 +4,12 @@
 
 # Home page
 GET     /                           controllers.Application.index
+
 GET		/vr/trains					controllers.Application.vrTrainList
 GET		/vr/trains/:train			controllers.Application.vrTrainData(train:String)
+
+GET		/sj/trains				    controllers.Application.sjTrainList
+
 GET		/sj/stations				controllers.Application.sjStationList
 GET     /sj/stations/:signature/arrivals   controllers.Application.sjArrivalList(signature:String)
 GET     /sj/stations/:signature/departures controllers.Application.sjDepartureList(signature:String)
