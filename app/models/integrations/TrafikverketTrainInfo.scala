@@ -9,7 +9,7 @@ import play.api.Play
 object TrafikverketTrainInfo {
   lazy val apiKey = Play.current.configuration.getString("integrations.trafikverket.traininfo.key").getOrElse("")
   private lazy val stationList = WS.url("https://api.trafiklab.se/trafikverket/traininfo/stations/listAllCurrentlyUsed")
-  private def arrivalList(station: String) = WS.url(s"https://api.trafiklab.se/trafikverket/traininfo/stations/sign/${station}/arrivals")
+  private def arrivalList(station: String) = WS.url(s"https://api.trafiklab.se/trafikverket/traininfo/stations/sign/${station}/departures")
   private def trainInfo(trainId: String) = WS.url(s"https://api.trafiklab.se/trafikverket/traininfo/trains/${trainId}")
   private def bodyToXml(response: Response) = XML.loadString(response.body)
 
