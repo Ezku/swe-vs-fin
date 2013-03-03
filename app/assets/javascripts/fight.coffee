@@ -44,16 +44,25 @@ Fight = do ->
       fin: resultBuses("fin")
       swe: resultBuses("swe")
 
-    for source, uri of { fin: "vr/trains", swe: "sj/trains" }
+    streams = for source, uri of { fin: "vr/trains", swe: "sj/trains" }
       do (source) ->
         Bacon
           .fromPromise($.getJSON(uri))
           .map((data) -> metrics data.trains)
-          .onValue((metrics) ->
-            for name, value of metrics
-              results[source][name].push value
-              results[source][name].end()
-          )
+          .map((metrics) -> { source, metrics })
+
+    Bacon
+      .mergeAll(streams)
+      .doAction(({source, metrics}) ->
+        for name, value of metrics
+          results[source][name].push value
+          results[source][name].end()
+      ).scan(0, (done) -> done + 1)
+      .filter((done) -> done is 2)
+      .onValue( ->
+        $("#intro p").text("Three servings of artisanally crafted data at your disposal.")
+        $("#results h2").text("Wow, that took a while.")
+      )
 
   { start }
 
