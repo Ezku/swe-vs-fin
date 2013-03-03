@@ -57,23 +57,20 @@ object Application extends Controller {
   def sjTrainList = Action {
     Async {
       TrafikverketTrainexport.fetchTrainList map { list =>
-        val trains = Json.obj(
-          "trains" -> (list \\ "Trafiklage").map { train =>
+        Ok(Json.obj(
+          "trains" -> list.map { train =>
             Json.obj(
-              "guid" -> (train \ "TagGrupp").text,
-              "title" -> (train \ "AnnonseratTagId").text,
-              "from" -> (train \ "Fran").text,
-              "to" -> (train \ "Till").text,
-              "scheduledDeparture" -> (train \ "AnnonseradTidpunktAvgang").text,
-              "actualDeparture" -> (train \ "VerkligTidpunktAvgang").text,
-              "estimatedDeparture" -> (train \ "BeraknadTidpunktAvgang").text,
-              "scheduledArrival" -> (train \ "AnnonseradTidpunktAnkomst").text,
-              "actualArrival" -> (train \ "VerkligTidpunktAnkomst").text,
-              "estimatedArrival" -> (train \ "BeraknadTidpunktAnkomst").text
+              "guid" -> train.guid,
+              "title" -> train.title,
+              "from" -> train.from,
+              "to" -> train.to,
+              "scheduledDeparture" -> train.scheduledDeparture,
+              "actualDeparture" -> train.actualDeparture,
+              "scheduledArrival" -> train.scheduledArrival,
+              "actualArrival" -> train.actualArrival
             )
           }
-        )
-        Ok(trains)
+        ))
       }
     }
   }
