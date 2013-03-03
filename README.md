@@ -1,3 +1,9 @@
 # Sweden vs Finland - public transport edition
 
 This application visualizes how well trains in Sweden and Finland manage to keep their schedules in the spirit of friendly competition. Lateness data is based on open APIs from [sj.se](http://sj.se) through [trafiklab.se](http://trafiklab.se) for Sweden and [vr.fi](http://vr.fi) for Finland.
+
+## Attributions
+
+- Background image: [Subtle patterns](http://subtlepatterns.com/maze-black/)
+- Font face: [Google web fonts](http://www.google.com/webfonts/specimen/Lato)
+- Color palette: [Colourlovers](http://www.colourlovers.com/palette/2725463/Bright_Day-IFRC)
