@@ -49,7 +49,8 @@ object Application extends Controller {
               "scheduledDeparture" -> train.scheduledDeparture,
               "actualDeparture" -> train.actualDeparture,
               "scheduledArrival" -> train.scheduledArrival,
-              "actualArrival" -> train.actualArrival)
+              "actualArrival" -> train.actualArrival,
+              "lateness" -> train.lateness)
           }))
       }
     }

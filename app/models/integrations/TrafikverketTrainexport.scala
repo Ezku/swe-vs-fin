@@ -4,7 +4,9 @@ import play.api.libs.ws.{ WS, Response }
 import scala.xml.XML
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.Play
-import org.scala_tools.time.Imports._
+import org.joda.time.DateTime
+import org.joda.time.Interval
+import scala.util.Try
 
 object TrafikverketTrainexport {
   object XmlData {
@@ -37,6 +39,13 @@ object TrafikverketTrainexport {
       (title.length > 0)
     def hasDeparted =
       (actualDeparture.length > 0)
+    def lateness = hasDeparted match {
+      case true =>
+        Try(Some(
+          DateTime.parse(actualDeparture).getMillis() - DateTime.parse(scheduledDeparture).getMillis()
+        )).getOrElse(None)
+      case _ => None
+    }
   }
 
   def fetchTrainList = XmlData.fetchTrainList.map { list => 
