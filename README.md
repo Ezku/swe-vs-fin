@@ -2,6 +2,12 @@
 
 This application visualizes how well trains in Sweden and Finland manage to keep their schedules in the spirit of friendly competition. Lateness data is based on open APIs from [sj.se](http://sj.se) through [trafiklab.se](http://trafiklab.se) for Sweden and [vr.fi](http://vr.fi) for Finland.
 
+## Deployment
+
+- Acquire permission to use VR's Open Data API, no key required
+- Register for trafiklab and acquire an API key for the Trafikverket Trainexport API, then place the key in conf/application.conf under the Trainexport entry
+- Start the application with `play run` on the command line
+
 ## Attributions
 
 - Background image: [Subtle patterns](http://subtlepatterns.com/maze-black/)
