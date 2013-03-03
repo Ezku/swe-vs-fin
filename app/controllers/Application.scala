@@ -5,7 +5,6 @@ import play.api.mvc._
 import models.integrations._
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.libs.json._
-import org.scala_tools.time.Imports._
 
 object Application extends Controller {
   def index = Action {

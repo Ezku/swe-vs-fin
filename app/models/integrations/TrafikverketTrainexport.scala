@@ -4,6 +4,7 @@ import play.api.libs.ws.{ WS, Response }
 import scala.xml.XML
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.Play
+import org.scala_tools.time.Imports._
 
 object TrafikverketTrainexport {
   object XmlData {
@@ -14,8 +15,7 @@ object TrafikverketTrainexport {
     lazy val fetchTrainList = 
       trainList
         .withQueryString(
-          "key" -> apiKey,
-          "TrafikplatsPrognos" -> "true"
+          "key" -> apiKey
         )
         .get()
         .map(bodyToXml _)
@@ -30,7 +30,14 @@ object TrafikverketTrainexport {
     val actualDeparture: String,
     val scheduledArrival: String,
     val actualArrival: String
-  )
+  ) {
+    def isValid =
+      (from.length > 0) &&
+      (to.length > 0) &&
+      (title.length > 0)
+    def hasDeparted =
+      (actualDeparture.length > 0)
+  }
 
   def fetchTrainList = XmlData.fetchTrainList.map { list => 
     (list \\ "Trafiklage").map { train =>
@@ -44,6 +51,12 @@ object TrafikverketTrainexport {
         (train \ "AnnonseradTidpunktAnkomst").text,
         (train \ "VerkligTidpunktAnkomst").text
       )
-    }
+    }.groupBy(_.guid).mapValues { trainStops =>
+      trainStops
+      	.filter({train => train.isValid && train.hasDeparted})
+      	.sortBy(_.actualDeparture)
+      	.reverse
+      	.headOption      
+    }.values.flatten
   }
 }
