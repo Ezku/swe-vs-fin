@@ -10,7 +10,7 @@ object Application extends Controller {
   def index = Action {
     Ok(views.html.index("Sweden vs Finland - public transportation edition"))
   }
-  
+
   def vrTrainList = Action {
     Async {
       VrOpenData.fetchTrainList map { list =>
@@ -19,40 +19,23 @@ object Application extends Controller {
             Json.obj(
               "guid" -> train.guid,
               "title" -> train.title,
-              "status" -> train.status
-            )
-          }
-        ))
+              "lateness" -> train.lateness,
+              "stops" -> train.stops.map { stop =>
+                Json.obj(
+                  "guid" -> stop.guid,
+                  "title" -> stop.title,
+                  "scheduledArrival" -> stop.scheduledArrival,
+                  "scheduledDeparture" -> stop.scheduledDeparture,
+                  "estimatedArrival" -> stop.estimatedArrival,
+                  "estimatedDeparture" -> stop.estimatedDeparture,
+                  "completed" -> stop.completed,
+                  "status" -> stop.status)
+              })
+          }))
       }
     }
   }
-  
-  def vrTrainData(guid:String) = Action {
-    Async {
-      VrOpenData.fetchTrainData(guid) map { train =>
-        Ok(Json.obj(
-          "train" -> Json.obj(
-            "guid" -> train.guid,
-            "title" -> train.title,
-            "lateness" -> train.lateness,
-            "stops" -> train.stops.map { stop =>
-              Json.obj(
-                "guid" -> stop.guid,
-                "title" -> stop.title,
-                "scheduledArrival" -> stop.scheduledArrival,
-                "scheduledDeparture" -> stop.scheduledDeparture,
-                "estimatedArrival" -> stop.estimatedArrival,
-                "estimatedDeparture" -> stop.estimatedDeparture,
-                "completed" -> stop.completed,
-                "status" -> stop.status
-              )
-            }
-          )
-        ))
-      }
-    }
-  }
-  
+
   def sjTrainList = Action {
     Async {
       TrafikverketTrainexport.fetchTrainList map { list =>
@@ -66,10 +49,8 @@ object Application extends Controller {
               "scheduledDeparture" -> train.scheduledDeparture,
               "actualDeparture" -> train.actualDeparture,
               "scheduledArrival" -> train.scheduledArrival,
-              "actualArrival" -> train.actualArrival
-            )
-          }
-        ))
+              "actualArrival" -> train.actualArrival)
+          }))
       }
     }
   }

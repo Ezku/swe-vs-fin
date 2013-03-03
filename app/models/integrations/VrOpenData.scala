@@ -16,20 +16,41 @@ object VrOpenData {
     def fetchTrainData(guid: String) = trainData(guid).get().map(bodyToXml _)
   }
 
-  case class TrainInfo(val guid: String, val title: String, val status: String)
+  case class TrainInfo(
+    val guid: String,
+    val title: String,
+    val status: String
+  )
 
-  def fetchTrainList = XmlData.fetchTrainList.map { list =>
-    (list \\ "item").map { train =>
+  def fetchTrainList = XmlData.fetchTrainList.flatMap { list =>
+    val trains = (list \\ "item").map { train =>
       TrainInfo(
         (train \ "guid").text,
         (train \ "title").text,
         (train \ "status").text
       )
     }
+    Future.sequence {
+      trains.map { train => fetchTrainData(train.guid) }
+    }
   }
 
-  case class TrainDetails(val guid: String, val title: String, val lateness: String, val stops: Seq[TrainStop])
-  case class TrainStop(val guid: String, val title: String, val scheduledArrival: String, val scheduledDeparture: String, val estimatedArrival: String, val estimatedDeparture: String, val completed: String, val status: String)
+  case class TrainDetails(
+    val guid: String,
+    val title: String,
+    val lateness: String,
+    val stops: Seq[TrainStop]
+  )
+  case class TrainStop(
+    val guid: String,
+    val title: String,
+    val scheduledArrival: String,
+    val scheduledDeparture: String,
+    val estimatedArrival: String,
+    val estimatedDeparture: String,
+    val completed: String,
+    val status: String
+  )
 
   def fetchTrainData(guid: String) = XmlData.fetchTrainData(guid).map (_ \ "channel") map { data =>
     TrainDetails(

@@ -6,8 +6,6 @@
 GET     /                           controllers.Application.index
 
 GET		/vr/trains					controllers.Application.vrTrainList
-GET		/vr/trains/:train			controllers.Application.vrTrainData(train:String)
-
 GET		/sj/trains				    controllers.Application.sjTrainList
 
 # Map static resources from the /public folder to the /assets URL path
