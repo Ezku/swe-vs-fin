@@ -1,16 +1,6 @@
 Fight = do ->
 
   metrics = do ->
-    averageLateness = (trains) ->
-      [lateness, instances] = [0, 0]
-      
-      for train in trains
-         if train.lateness > 0
-           lateness += ~~train.lateness
-           instances += 1
-
-      [lateness, instances]
-
     treshold = (lateness) -> (trains) ->
       [late, instances] = [0, 0]
       
@@ -20,16 +10,25 @@ Fight = do ->
       
       [late, instances]
 
+    medianLateness = (trains) ->
+      latenesses = (~~train.lateness for train in trains when train.lateness > 0)
+      latenesses.sort (left, right) -> right - left
+      middle = Math.floor (latenesses.length / 2)
+      if latenesses.length % 2 is 0
+        Math.round ((latenesses[middle-1] + latenesses[middle]) / 2)
+      else
+        latenesses[middle]
+
     return (trains) ->
-      averageLateness: averageLateness trains
+      medianLateness: medianLateness trains
       latenessRatio: treshold(0) trains
       tooLate: treshold(180) trains
 
-  start = ->
 
-    busFor = (element) ->
+  start = ->
+    busFor = (element) -> (treatment) ->
       bus = (new Bacon.Bus)
-      bus.map(([dividend, divisor]) -> "#{dividend}/#{divisor}")
+      bus.map(treatment)
          .assign(element, "text")
       bus
 
@@ -37,9 +36,9 @@ Fight = do ->
     resultBuses = (side) ->
       element = elements(side)
 
-      averageLateness: busFor(element("average-lateness"))
-      latenessRatio: busFor(element("lateness-ratio"))
-      tooLate: busFor(element("too-late"))
+      medianLateness: busFor(element("median-lateness"))((median) -> "#{Math.round(median/60)} min")
+      latenessRatio: busFor(element("lateness-ratio"))(([dividend, divisor]) -> "#{dividend} out of #{divisor}")
+      tooLate: busFor(element("too-late"))(([dividend, divisor]) -> "#{dividend} out of #{divisor}")
 
     results =
       fin: resultBuses("fin")
@@ -49,29 +48,12 @@ Fight = do ->
       do (source) ->
         Bacon
           .fromPromise($.getJSON(uri))
-          .map((data) -> data.trains)
-          .map(metrics)
+          .map((data) -> metrics data.trains)
           .onValue((metrics) ->
             for name, value of metrics
               results[source][name].push value
               results[source][name].end()
           )
-
-
-    setContent = (element) -> (content) -> element.text(content)
-
-    ###
-    randomIntegerStream = (from, to) -> Bacon.interval(100).map(-> Math.floor((to - from) * Math.random()) + from)
-
-    randomIntegerStream(0,4).onValue(setContent(elements.results.swe()))
-    randomIntegerStream(0,4).onValue(setContent(elements.results.fin()))
-
-    randomIntegerStream(0,100).onValue(setContent(elements.latenessRatio.swe()))
-    randomIntegerStream(0,100).onValue(setContent(elements.latenessRatio.fin()))
-
-    randomIntegerStream(0,10).onValue(setContent(elements.averageLateness.swe()))
-    randomIntegerStream(0,10).onValue(setContent(elements.averageLateness.fin()))
-    ###
 
   { start }
 
