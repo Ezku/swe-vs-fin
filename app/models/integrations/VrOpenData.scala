@@ -13,7 +13,7 @@ object VrOpenData {
     private def trainData(guid: String) = WS.url(s"http://188.117.35.14/TrainRSS/TrainService.svc/trainInfo?train=${guid}")
     private def bodyToXml(response: Response) = XML.loadString(response.body)
 
-    lazy val fetchTrainList = trainList.get().map(bodyToXml _)
+    def fetchTrainList = trainList.get().map(bodyToXml _)
     def fetchTrainData(guid: String) = trainData(guid).get().map(bodyToXml _)
   }
 

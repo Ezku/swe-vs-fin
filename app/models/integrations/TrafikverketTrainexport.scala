@@ -14,7 +14,7 @@ object TrafikverketTrainexport {
     private lazy val trainList = WS.url("https://api.trafiklab.se/trafikverket/trainexport/traffic")
     private def bodyToXml(response: Response) = XML.loadString(response.body)
 
-    lazy val fetchTrainList = 
+    def fetchTrainList = 
       trainList
         .withQueryString(
           "key" -> apiKey
