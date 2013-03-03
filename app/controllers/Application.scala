@@ -14,9 +14,10 @@ object Application extends Controller {
   }
 
   def vrTrainList = Cached(_.uri, 300) {
+    val results = VrOpenData.fetchTrainList
     Action {
       Async {
-        VrOpenData.fetchTrainList map { list =>
+        results map { list =>
           Ok(Json.obj(
             "trains" -> list.map { train =>
               Json.obj(
@@ -41,9 +42,10 @@ object Application extends Controller {
   }
 
   def sjTrainList = Cached(_.uri, 300) {
+    val results = TrafikverketTrainexport.fetchTrainList
     Action {
       Async {
-        TrafikverketTrainexport.fetchTrainList map { list =>
+        results map { list =>
           Ok(Json.obj(
             "trains" -> list.map { train =>
               Json.obj(
