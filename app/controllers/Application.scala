@@ -15,44 +15,41 @@ object Application extends Controller {
   def vrTrainList = Action {
     Async {
       VrOpenData.fetchTrainList map { list =>
-        val trains = Json.obj(
-          "trains" -> (list \\ "item").map { train =>
+        Ok(Json.obj(
+          "trains" -> list.map { train =>
             Json.obj(
-              "guid" -> (train \ "guid").text,
-              "title" -> (train \ "title").text,
-              "status" -> (train \ "status").text
+              "guid" -> train.guid,
+              "title" -> train.title,
+              "status" -> train.status
             )
           }
-        )
-        Ok(trains)
+        ))
       }
     }
   }
   
   def vrTrainData(guid:String) = Action {
     Async {
-      VrOpenData.fetchTrainData(guid) map(_ \ "channel") map { data =>
-        
-        val train = Json.obj(
-            "train" -> Json.obj(
-               "guid" -> (data \ "trainguid").text,
-               "title" -> (data \ "title").text,
-               "lateness" -> (data\ "lateness").text,
-               "stops" -> (data \ "item").map { stop =>
-                 Json.obj(
-                     "guid" -> (stop \ "guid").text,
-                     "title" -> (stop \ "title").text,
-                     "scheduledArrival" -> (stop \ "scheduledTime").text,
-                     "scheduledDeparture" -> (stop \ "scheduledDepartTime").text,
-                     "estimatedArrival" -> (stop \ "eta").text,
-                     "estimatedDeparture" -> (stop \ "etd").text,
-                     "completed" -> (stop \ "completed").text,
-                     "status" -> (stop \ "status").text
-                 )
-               }
-            )
-        )
-        Ok(train)
+      VrOpenData.fetchTrainData(guid) map { train =>
+        Ok(Json.obj(
+          "train" -> Json.obj(
+            "guid" -> train.guid,
+            "title" -> train.title,
+            "lateness" -> train.lateness,
+            "stops" -> train.stops.map { stop =>
+              Json.obj(
+                "guid" -> stop.guid,
+                "title" -> stop.title,
+                "scheduledArrival" -> stop.scheduledArrival,
+                "scheduledDeparture" -> stop.scheduledDeparture,
+                "estimatedArrival" -> stop.estimatedArrival,
+                "estimatedDeparture" -> stop.estimatedDeparture,
+                "completed" -> stop.completed,
+                "status" -> stop.status
+              )
+            }
+          )
+        ))
       }
     }
   }
