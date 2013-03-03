@@ -12,7 +12,10 @@ object TrafikverketTrainexport {
 
   lazy val fetchTrainList = 
     trainList
-      .withQueryString("key" -> apiKey)
+      .withQueryString(
+      	"key" -> apiKey,
+      	"TrafikplatsPrognos" -> "true"
+  	  )
       .get()
       .map(bodyToXml _)
 }

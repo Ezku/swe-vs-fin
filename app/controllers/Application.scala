@@ -16,13 +16,13 @@ object Application extends Controller {
     Async {
       VrOpenData.fetchTrainList map { list =>
         val trains = Json.obj(
-          "trains" -> Json.arr((list \\ "item").map { train =>
+          "trains" -> (list \\ "item").map { train =>
             Json.obj(
               "guid" -> (train \ "guid").text,
               "title" -> (train \ "title").text,
               "status" -> (train \ "status").text
             )
-          })
+          }
         )
         Ok(trains)
       }
@@ -38,7 +38,7 @@ object Application extends Controller {
                "guid" -> (data \ "trainguid").text,
                "title" -> (data \ "title").text,
                "lateness" -> (data\ "lateness").text,
-               "stops" -> Json.arr((data \ "item").map { stop =>
+               "stops" -> (data \ "item").map { stop =>
                  Json.obj(
                      "guid" -> (stop \ "guid").text,
                      "title" -> (stop \ "title").text,
@@ -49,7 +49,7 @@ object Application extends Controller {
                      "completed" -> (stop \ "completed").text,
                      "status" -> (stop \ "status").text
                  )
-               })
+               }
             )
         )
         Ok(train)
@@ -61,7 +61,7 @@ object Application extends Controller {
     Async {
       TrafikverketTrainexport.fetchTrainList map { list =>
         val trains = Json.obj(
-          "trains" -> Json.arr((list \\ "Trafiklage").map { train =>
+          "trains" -> (list \\ "Trafiklage").map { train =>
             Json.obj(
               "guid" -> (train \ "TagGrupp").text,
               "title" -> (train \ "AnnonseratTagId").text,
@@ -74,7 +74,7 @@ object Application extends Controller {
               "actualArrival" -> (train \ "VerkligTidpunktAnkomst").text,
               "estimatedArrival" -> (train \ "BeraknadTidpunktAnkomst").text
             )
-          })
+          }
         )
         Ok(trains)
       }
