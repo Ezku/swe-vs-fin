@@ -42,7 +42,7 @@ object TrafikverketTrainexport {
     def lateness = hasDeparted match {
       case true =>
         Try(Some(
-          DateTime.parse(actualDeparture).getMillis() - DateTime.parse(scheduledDeparture).getMillis()
+          (DateTime.parse(actualDeparture).getMillis() - DateTime.parse(scheduledDeparture).getMillis()) / 1000
         )).getOrElse(None)
       case _ => None
     }
